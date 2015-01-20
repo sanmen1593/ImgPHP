@@ -12,7 +12,7 @@ function checkimages() {
      * aquellos cuya fecha de modificación/creación sea mayor a la ultima
      * fecha de chequeo (lastcheck.txt). Crea un array con las imagenes
      * convertidas. */
-    $dir = "files";
+    $dir = "../files";
     $files = scandir($dir);
     $imgfiles = array();
     foreach ($files as $file) {
@@ -61,18 +61,20 @@ function convertImages($file) {
 
 function sendToServer() {
     $images = checkimages(); //Recibimos un array con los archivos en base64 que van a ser enviados al server
-    $data = $images;
-    try {
-        $response = Requests::post('http://104.131.74.66/request/request.php', array(), array('data' => $data));
-    } catch (Error $e) {
-        return $e->getMessage();
-    }
-    if ($response->success) {
-        echo $response->status_code;
-        echo $response->body;
-        setLastCheck();
-    } else {
-        sendToServer();
+    if ($images != null) {
+        $data = $images;
+        try {
+            $response = Requests::post('http://104.131.74.66/request/request.php', array(), array('data' => $data));
+        } catch (Error $e) {
+            return $e->getMessage();
+        }
+        if ($response->success) {
+            echo $response->status_code;
+            echo $response->body;
+            setLastCheck();
+        } else {
+            sendToServer();
+        }
     }
 }
 
