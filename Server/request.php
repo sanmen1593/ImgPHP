@@ -1,24 +1,25 @@
 <?php
 
-function storeImage() {
-    if (isset($_POST["img"])) {
-        try {
-            $encodedimage = $_POST["img"];
-            $decodedimage = base64_decode($encodedimage);
-            if(isset($_POST["filename"])) {
-                $filename = $_POST["filename"];
-            } else {
-                return "Error filename";
-            }
-            file_put_contents($filename, $decodedimage);
-        } catch (Error $e) {
-            return $e->getMessage();
-        }
-        //$decodedimage =base64_decode($encodedString);
-        return "Imagen guardada";
-    } else {
-        return "Error empty image";
-    }
+if (isset($_POST["data"])) {
+    $datos = $_POST["data"];
+} else {
+    return "No se envio nada";
 }
 
-storeImage();
+foreach ($datos as $file) {
+    if (isset($file['img']) || isset($file['filename'])) {
+        $encodedimage = $file['img'];
+        $filename = $file['filename'];
+    } else {
+        return "Error with data";
+    }
+    try {
+        $decodedimage = base64_decode($encodedimage);
+        file_put_contents($filename, $decodedimage);
+    } catch (Error $e) {
+        return $e->getMessage();
+    }
+}
+return "Imagenes guardadas";
+
+
