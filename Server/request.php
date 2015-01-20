@@ -1,25 +1,24 @@
 <?php
 
-if (isset($_POST["img"])) {
-    echo "************";
-    $encodedimage = $_POST["img"];
-    $decodedimage = base64_decode($encodedimage);
-    $filename = $_POST["filename"];
-    
-    /*try {
-        $myfile = fopen($_POST["filename"], "w");
-    } catch (Exception $e) {
-        echo $e->getMessage();
+function storeImage() {
+    if (isset($_POST["img"])) {
+        try {
+            $encodedimage = $_POST["img"];
+            $decodedimage = base64_decode($encodedimage);
+            if(isset($_POST["filename"])) {
+                $filename = $_POST["filename"];
+            } else {
+                return "Error filename";
+            }
+            file_put_contents($filename, $decodedimage);
+        } catch (Error $e) {
+            return $e->getMessage();
+        }
+        //$decodedimage =base64_decode($encodedString);
+        return "Imagen guardada";
+    } else {
+        return "Error empty image";
     }
-    fwrite($myfile, $decodedimage);
-    fclose($myfile);*/
-    
-    file_put_contents($filename, $decodedimage);
-    //$decodedimage =base64_decode($encodedString);
-    echo "Imagen enviada";
-} else {
-    $myfile2 = fopen("error.txt", "w");
-    fwrite($myfile2, "No vino ninguna imagen en la petición.");
-    fclose($myfile2);
 }
 
+storeImage();
