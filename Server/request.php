@@ -1,25 +1,34 @@
 <?php
 
+$allsaved = true;
+/*Una variable para saber si se guardaron todas las imagenes o no
+En caso de que no, se envia un status_code 500 y tienen que mandarse las imagenes de nuevo.
+ */
+
+
 if (isset($_POST["data"])) {
     $datos = $_POST["data"];
 } else {
-    return "No se envio nada";
+    $allsaved = false;
 }
 
 foreach ($datos as $file) {
-    if (isset($file['img']) || isset($file['filename'])) {
+    var_dump(count($datos));
+    if (isset($file['img']) && isset($file['filename'])) {
         $encodedimage = $file['img'];
         $filename = $file['filename'];
     } else {
-        return "Error with data";
+        $allsaved = false;
     }
     try {
         $decodedimage = base64_decode($encodedimage);
         file_put_contents($filename, $decodedimage);
     } catch (Error $e) {
-        return $e->getMessage();
+        $allsaved = false;
     }
 }
-return "Imagenes guardadas";
-
-
+if ($allsaved == false) {
+    http_response_code(500);
+} else {
+    http_response_code(200);
+}

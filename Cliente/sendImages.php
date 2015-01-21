@@ -69,11 +69,9 @@ function sendToServer() {
             return $e->getMessage();
         }
         if ($response->success) {
-            echo $response->status_code;
-            echo $response->body;
             setLastCheck();
         } else {
-            sendToServer();
+            echo "Error:" . $response->status_code;
         }
     }
 }
